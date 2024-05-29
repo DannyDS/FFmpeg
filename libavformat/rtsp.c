@@ -174,23 +174,46 @@ static void get_word(char *buf, int buf_size, const char **pp)
  */
 static void rtsp_parse_range_npt(const char *p, int64_t *start, int64_t *end)
 {
+    return;
+    
     char buf[256];
-
-    p += strspn(p, SPACE_CHARS);
-    if (!av_stristart(p, "npt=", &p))
-        return;
 
     *start = AV_NOPTS_VALUE;
     *end = AV_NOPTS_VALUE;
 
-    get_word_sep(buf, sizeof(buf), "-", &p);
-    if (av_parse_time(start, buf, 1) < 0)
-        return;
-    if (*p == '-') {
-        p++;
+    p += strspn(p, SPACE_CHARS);
+
+    if(av_stristart(p, "npt=", &p)){
         get_word_sep(buf, sizeof(buf), "-", &p);
-        if (av_parse_time(end, buf, 1) < 0)
-            av_log(NULL, AV_LOG_DEBUG, "Failed to parse interval end specification '%s'\n", buf);
+        if (av_parse_time(start, buf, 1) < 0)
+            return;
+
+        if (*p == '-') {
+            p++;
+            get_word_sep(buf, sizeof(buf), "-", &p);
+            if (av_parse_time(end, buf, 1) < 0)
+                av_log(NULL, AV_LOG_ERROR, "Failed to parse interval end specification %s\n", buf);
+
+        }
+    }
+    else if (av_stristart(p, "clock=", &p)){
+        get_word_sep(buf, sizeof(buf), "-", &p);
+        if (av_parse_time(start, buf, 0) < 0)
+        {
+                return;
+        }
+        
+        if (*p == '-') {
+            p++;
+            get_word_sep(buf, sizeof(buf), "-", &p);
+            if (av_parse_time(end, buf, 0) < 0)
+            {
+                av_log(NULL, AV_LOG_ERROR, "Failed to parse datetime end specification %s\n", buf);
+            }
+        }
+    }
+    else{
+        return;
     }
 }
 
@@ -622,7 +645,6 @@ static void sdp_parse_line(AVFormatContext *s, SDPParseState *s1,
             rtsp_st->ssrc = strtoll(buf1, NULL, 10);
         } else if (av_strstart(p, "range:", &p)) {
             int64_t start, end;
-
             // this is so that seeking on a streamed file can work.
             rtsp_parse_range_npt(p, &start, &end);
             s->start_time = start;

@@ -37,6 +37,7 @@
 #include "tls.h"
 #include "url.h"
 #include "version.h"
+#include <time.h>
 
 static const struct RTSPStatusMessage {
     enum RTSPStatusCode code;
@@ -561,11 +562,21 @@ static int rtsp_read_play(AVFormatContext *s)
         }
         if (rt->state == RTSP_STATE_PAUSED) {
             cmd[0] = 0;
-        } else {
+       /*} else {
             snprintf(cmd, sizeof(cmd),
                      "Range: npt=%"PRId64".%03"PRId64"-\r\n",
                      rt->seek_timestamp / AV_TIME_BASE,
                      rt->seek_timestamp / (AV_TIME_BASE / 1000) % 1000);
+        }*/
+        } else {
+            time_t rawtime;
+            struct tm  ts;
+            char buf[16];
+
+            rawtime = (int)s->opaque;
+            ts = *localtime(&rawtime);
+            strftime(buf, sizeof(buf), "%Y%m%dT%H%M%S", &ts);
+            snprintf(cmd, sizeof(cmd), "Range:clock=%sZ-\r\nImmediate: yes\r\n", buf);
         }
         ff_rtsp_send_cmd(s, "PLAY", rt->control_uri, cmd, reply, NULL);
         if (reply->status_code != RTSP_STATUS_OK) {
