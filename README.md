@@ -4,6 +4,22 @@ FFmpeg README
 FFmpeg is a collection of libraries and tools to process multimedia content
 such as audio, video, subtitles and related metadata.
 
+## Changes for Onvif streaming
+
+* RTSP.c parses clock value from rtsp header to get stream start time and end time
+* RTSPDec.c uses unused Opaque value from AV_Context so we can pass a Clock value to set stream start point
+* RTPDec.c stores RTP header extension in AV_Frame_Side_Data so we can extract frame time and when the stream has ended
+
+##Building using VCPKG
+
+* To build with VCPKG open vcpkg\ports\ffmpeg\portfile.cmake
+* Change REPO to point to 'DannyDS/FFmpeg'
+* Change Ref to point to the latest branch 'N6.1.1-onvif'
+* Run VCPKG install FFmpeg and it will fail due to mismatch of the SHA512, it will print out what the hash should be copy it and replace SHA512 in the cmake file
+* If you want to rebuild FFmpeg first run vcpkg remove ffmpeg
+* Delete the FFmpeg folder in vcpkg/buildtrees
+* Delete User\AppData\Local\vcpkg\archives
+
 ## Libraries
 
 * `libavcodec` provides implementation of a wider range of codecs.
