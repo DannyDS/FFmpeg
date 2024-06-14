@@ -753,6 +753,11 @@ static int rtp_parse_packet_internal(RTPDemuxContext *s, AVPacket *pkt,
 
         if (len < ext)
             return -1;
+
+        void *side_buf = av_malloc(ext);
+        memcpy(side_buf, buf, ext);
+        av_packet_add_side_data(pkt, AV_PKT_DATA_NEW_EXTRADATA, side_buf, ext);
+
         // skip past RTP header extension
         len -= ext;
         buf += ext;
