@@ -10,7 +10,7 @@ such as audio, video, subtitles and related metadata.
 * RTSPDec.c uses unused Opaque value from AV_Context so we can pass a Clock value to set stream start point
 * RTPDec.c stores RTP header extension in AV_Frame_Side_Data so we can extract frame time and when the stream has ended
 
-##Building using VCPKG
+## Building using VCPKG
 
 * To build with VCPKG open vcpkg\ports\ffmpeg\portfile.cmake
 * Change REPO to point to 'DannyDS/FFmpeg'
