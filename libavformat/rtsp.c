@@ -173,9 +173,7 @@ static void get_word(char *buf, int buf_size, const char **pp)
  *  Used for seeking in the rtp stream.
  */
 static void rtsp_parse_range_npt(const char *p, int64_t *start, int64_t *end)
-{
-    return;
-    
+{    
     char buf[256];
 
     *start = AV_NOPTS_VALUE;
