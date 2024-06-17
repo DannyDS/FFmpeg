@@ -16,9 +16,11 @@ such as audio, video, subtitles and related metadata.
 * Change REPO to point to 'DannyDS/FFmpeg'
 * Change Ref to point to the latest branch 'N6.1.1-onvif'
 * Run VCPKG install FFmpeg and it will fail due to mismatch of the SHA512, it will print out what the hash should be copy it and replace SHA512 in the cmake file
-* If you want to rebuild FFmpeg first run vcpkg remove ffmpeg
-* Delete the FFmpeg folder in vcpkg/buildtrees
+* If you want to rebuild FFmpeg first run `vcpkg remove ffmpeg`
+* Delete the FFmpeg folder in vcpkg/buildtrees/
+* * Delete the FFmpeg folder from vcplg/downloads/
 * Delete User\AppData\Local\vcpkg\archives
+
 
 ## Libraries
 
