@@ -349,6 +349,10 @@ static int rtsp_read_setup(AVFormatContext *s, char* host, char *controlurl)
 
     av_strlcatf(responseheaders, sizeof(responseheaders), "Session: %s\r\n",
                 rt->session_id);
+
+    av_strlcatf(responseheaders, sizeof(responseheaders), "Require: onvif-replay\r\n",
+                rt->session_id);
+
     /* Send Reply */
     rtsp_send_reply(s, RTSP_STATUS_OK, responseheaders, request.seq);
 
@@ -574,9 +578,16 @@ static int rtsp_read_play(AVFormatContext *s)
             char buf[16];
 
             rawtime = (int)s->opaque;
-            ts = *localtime(&rawtime);
-            strftime(buf, sizeof(buf), "%Y%m%dT%H%M%S", &ts);
-            snprintf(cmd, sizeof(cmd), "Range:clock=%sZ-\r\nImmediate: yes\r\n", buf);
+            if (rawtime == 0)
+            {
+                snprintf(cmd, sizeof(cmd), "Range:npt=now-\r\nImmediate: yes\r\nRequire: onvif-replay\r\n", buf);
+            }
+            else
+            {
+                ts = *localtime(&rawtime);
+                strftime(buf, sizeof(buf), "%Y%m%dT%H%M%S", &ts);
+                snprintf(cmd, sizeof(cmd), "Range:clock=%sZ-\r\nImmediate: yes\r\nRequire: onvif-replay\r\n", buf);
+            }
         }
         ff_rtsp_send_cmd(s, "PLAY", rt->control_uri, cmd, reply, NULL);
         if (reply->status_code != RTSP_STATUS_OK) {
