@@ -7,7 +7,7 @@ such as audio, video, subtitles and related metadata.
 ## Changes for Onvif streaming
 
 * RTSP.c parses clock value from rtsp header to get stream start time and end time
-* RTSPDec.c uses unused Opaque value from AV_Context so we can pass a Clock value to set stream start point
+* RTSPDec.c uses unused Opaque value from AV_Context so we can pass a Clock value to set stream start point. If Opaque is set to 0 (live playback) then set the range header to Range:npt=now- so the servers response header contains correct start time
 * RTPDec.c stores RTP header extension in AV_Frame_Side_Data so we can extract frame time and when the stream has ended
 
 ## Building using VCPKG
