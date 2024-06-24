@@ -18,7 +18,7 @@ such as audio, video, subtitles and related metadata.
 * Run VCPKG install FFmpeg and it will fail due to mismatch of the SHA512, it will print out what the hash should be copy it and replace SHA512 in the cmake file
 * If you want to rebuild FFmpeg first run `vcpkg remove ffmpeg`
 * Delete the FFmpeg folder in vcpkg/buildtrees/
-* * Delete the FFmpeg folder from vcplg/downloads/
+* Delete the FFmpeg folder from vcpkg/downloads/
 * Delete User\AppData\Local\vcpkg\archives
 
 
