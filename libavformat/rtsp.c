@@ -185,7 +185,7 @@ static void rtsp_parse_range_npt(const char *p, int64_t *start, int64_t *end)
         get_word_sep(buf, sizeof(buf), "-", &p);
         if (av_parse_time(start, buf, 1) < 0)
         {
-            start = 0;
+            start = AV_NOPTS_VALUE;
             return;
         }
 
@@ -194,7 +194,7 @@ static void rtsp_parse_range_npt(const char *p, int64_t *start, int64_t *end)
             get_word_sep(buf, sizeof(buf), "-", &p);
             if (av_parse_time(end, buf, 1) < 0)
             {
-                end = 0;
+                end = AV_NOPTS_VALUE;
                 av_log(NULL, AV_LOG_ERROR, "Failed to parse interval end specification %s\n", buf);
             }
         }
@@ -203,7 +203,7 @@ static void rtsp_parse_range_npt(const char *p, int64_t *start, int64_t *end)
         get_word_sep(buf, sizeof(buf), "-", &p);
         if (av_parse_time(start, buf, 0) < 0)
         {
-                start = 0;
+                start = AV_NOPTS_VALUE;
                 return;
         }
         
@@ -212,7 +212,7 @@ static void rtsp_parse_range_npt(const char *p, int64_t *start, int64_t *end)
             get_word_sep(buf, sizeof(buf), "-", &p);
             if (av_parse_time(end, buf, 0) < 0)
             {
-                end = 0;
+                end = AV_NOPTS_VALUE;
                 av_log(NULL, AV_LOG_ERROR, "Failed to parse datetime end specification %s\n", buf);
             }
         }
