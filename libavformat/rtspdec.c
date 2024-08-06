@@ -57,6 +57,11 @@ static const struct RTSPStatusMessage {
     { 0,                          "NULL"                             }
 };
 
+typedef struct RTSPPlaySettings {
+    int64_t playbackTime;
+    int scale;
+} RTSPPlaySettings;
+
 static int rtsp_read_close(AVFormatContext *s)
 {
     RTSPState *rt = s->priv_data;
@@ -575,18 +580,20 @@ static int rtsp_read_play(AVFormatContext *s)
         } else {
             time_t rawtime;
             struct tm  ts;
-            char buf[16];
+            char timeBuf[16];
 
-            rawtime = (int)s->opaque;
+            RTSPPlaySettings* playSettings = (struct RTSPPlaySettings*)s->opaque;
+
+            rawtime = (int)playSettings->playbackTime;
             if (rawtime == 0)
             {
-                snprintf(cmd, sizeof(cmd), "Range:npt=now-\r\nImmediate: yes\r\nRequire: onvif-replay\r\n", buf);
+                snprintf(cmd, sizeof(cmd), "Range:npt=now-\r\nImmediate: yes\r\nRequire: onvif-replay\r\nScale: %d\r\n", playSettings->scale);
             }
             else
             {
                 ts = *localtime(&rawtime);
-                strftime(buf, sizeof(buf), "%Y%m%dT%H%M%S", &ts);
-                snprintf(cmd, sizeof(cmd), "Range:clock=%sZ-\r\nImmediate: yes\r\nRequire: onvif-replay\r\n", buf);
+                strftime(timeBuf, sizeof(timeBuf), "%Y%m%dT%H%M%S", &ts);
+                snprintf(cmd, sizeof(cmd), "Range:clock=%sZ-\r\nImmediate: yes\r\nRequire: onvif-replay\r\nScale: %d\r\n", timeBuf, playSettings->scale);
             }
         }
         ff_rtsp_send_cmd(s, "PLAY", rt->control_uri, cmd, reply, NULL);
