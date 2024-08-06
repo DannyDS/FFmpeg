@@ -60,6 +60,7 @@ static const struct RTSPStatusMessage {
 typedef struct RTSPPlaySettings {
     int64_t playbackTime;
     int scale;
+    int rateControl;
 } RTSPPlaySettings;
 
 static int rtsp_read_close(AVFormatContext *s)
