@@ -592,7 +592,7 @@ static int rtsp_read_play(AVFormatContext *s)
             }
             else
             {
-                ts = *localtime(&rawtime);
+                ts = *gmtime(&rawtime);
                 strftime(timeBuf, sizeof(timeBuf), "%Y%m%dT%H%M%S", &ts);
                 snprintf(cmd, sizeof(cmd), "Range:clock=%sZ-\r\nImmediate: yes\r\nRequire: onvif-replay\r\nScale: %d\r\nFrames: %s\r\nRate-Control: %s\r\n", timeBuf, playSettings->scale, playSettings->frames, playSettings->rateControl);
             }
